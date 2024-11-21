@@ -8,17 +8,57 @@ class subforwardlist {
 struct Node {
     T data;
     Node* next;
+
 };
 
 Node * begin;
 Node * end;
 
+private:
+	void swap_data(subforwardlist<T> & rhs) {
+		unsigned int size_target = rhs.size();
+		unsigned int size_from = size();
+		if (size_target == size_from) {}
+			Node* from = begin;
+			Node* target = rhs.begin;
+			T temp;
+			unsigned int counter = 1;
+			while (counter <= size_from) {
+				temp = from->data;
+				from->data = target->data;
+				target->data = temp;
+
+				from = from->next;
+				target = target->next;
+				counter++;
+			}
+	}
+
+	void swap(subforwardlist<T> & rhs) {
+		Node * temp = begin;
+		begin = rhs.begin;
+		rhs.begin = temp;
+		temp = end;
+		end = rhs.end;
+		rhs.end = temp;
+	}
+
+	void crop_to_length(unsigned int length) {
+		unsigned int size_this = size();
+		while (length > size_this) {
+			push_back(T());
+			size_this += 1;
+		}	
+		while (length < size_this) {
+			pop_back();
+			size_this -= 1;
+		}
+	}
+
 public:
 
 	//конструктор
-    subforwardlist() {
-        begin = nullptr;
-        end = nullptr;
+    subforwardlist():  begin(nullptr), end(nullptr) {
 		cout << "List created" << endl;
     }
 
@@ -64,35 +104,14 @@ public:
 	//оператор присваивания копированием
 	subforwardlist& operator= (const subforwardlist<T> &rhs) {
 		if (this != &rhs) {
-			while (begin) {
-				Node * i = begin;
-				if (begin == end) {
-					begin = nullptr;
-					end = nullptr;
-					delete i;
-				} else {
-					while (i->next != end) {
-						i = i->next;
-					}
-					Node * temp = end;
-					end = i;
-					i->next = nullptr;
-					delete temp;	
-				}			
-			}	
-			// this->~subforwardlist<T>();
-			
 			unsigned int size = rhs.size();
-			for (int j = 0; j < size; j++) {
-				push_back(rhs.get_where_data(j+1));
+			crop_to_length(size);
+			Node* i = begin;
+			unsigned int counter = 0;
+			while (counter < size) {
+				i->data = rhs.get_where_data(++counter);
+				i = i->next;
 			}
-			Node *curr = begin;
-			int counter = 1;
-			while (counter != size) {
-				curr = curr->next;
-				counter++;
-			}
-			end = curr;
 			cout << "List copied" << endl;
 		}
 		return *this;
@@ -110,27 +129,7 @@ public:
 	//оператор присваивания перемещением
 	subforwardlist& operator= (subforwardlist<T>&& rhs) {
 		if (this != &rhs) {
-			while (begin) {
-				Node * i = begin;
-				if (begin == end) {
-					begin = nullptr;
-					end = nullptr;
-					delete i;
-				} else {
-					while (i->next != end) {
-						i = i->next;
-					}
-					Node * temp = end;
-					end = i;
-					i->next = nullptr;
-					delete temp;	
-				}	
-			}
-			// this->~subforwardlist<T>();
-			begin = rhs.begin;
-			end = rhs.end;
-			rhs.begin = nullptr;
-			rhs.end = nullptr;
+			swap(rhs);
 			cout << "List movemed" << endl;
 		}
 		return *this;
@@ -170,7 +169,7 @@ public:
 		}
 	}
 
-	void print_list(){
+	void print_list() const{
 		if (begin) {
 			Node * i = begin;
 			while (i != end) {
@@ -224,6 +223,8 @@ public:
 	void push_forward(const T& data) {
 		if (!begin) {
 			Node* new_node = new Node;
+			new_node->data = data;
+			new_node->next = nullptr;
 			begin = new_node;
 			end = new_node;
 		} else {
@@ -234,6 +235,7 @@ public:
 			begin = new_node;
 		}
 	}//добавление элемента в начало недосписка
+	
 	T pop_forward(){
 		if (!begin) {
 			return T();
@@ -326,17 +328,37 @@ int main() {
     subforwardlist<int> x;
 	x.push_back(5);
 	x.push_back(4);
-	x.push_forward(8);
-	// cout << x.subforwardlist<int>::pop_back() << endl;
-	// cout << x.subforwardlist<int>::pop_forward() << endl;
-	// cout << x.subforwardlist<int>::get_begin() << endl;
-	// x.subforwardlist<int>::print_list();
+	x.push_back(4);
+
+	cout << "x = ";
+	x.subforwardlist<int>::print_list();
+
+	subforwardlist<int> y;
+	y.push_back(1);
+	y.push_back(1);
+	y.push_back(1);
+	y.push_back(1);
+	y.push_back(1);
+
+	cout << "y = ";
+	y.subforwardlist<int>::print_list();
+
+	// y = move(x);
+	y = x;
+	
+	cout << "y = ";
+	y.subforwardlist<int>::print_list();
+	
+
+	// subforwardlist<int> a = move(x);
+
+	// subforwardlist<int> a;
+	// a = create_subforwardlist_with_one_node(7);
+
+	// subforwardlist<int> a = create_subforwardlist_with_one_node(7);
+
+
 	// x.subforwardlist<int>::push_where(4, 10);
 	// cout << x.subforwardlist<int>::erase_where(4) << endl;	
 	// x.subforwardlist<int>::print_list();
-	subforwardlist<int> a;
-	a = move(x);
-	// a = create_subforwardlist_with_one_node(7);
-	a.subforwardlist<int>::print_list();
-	// cout << a.subforwardlist<int>::get_where_data(1) << endl;
 }
