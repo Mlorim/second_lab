@@ -4,16 +4,27 @@ using namespace std;
 
 template<typename T>
 class subvector {
-public:
-    T *mas;
-    unsigned int top;
-    unsigned int capacity; 
 
+T *mas;
+unsigned int top;
+unsigned int capacity; 
+
+private:
+    void swap(subvector<T> & rhs) {
+        T* temp_mas = *mas;
+        unsigned int temp_top = top;
+        unsigned int temp_cap = capacity;
+        mas = rhs.mas;
+        top = rhs.top;
+        capacity = rhs.capacity;
+        rhs.mas = temp_mas;
+        rhs.top = temp_top
+        rhs.capacity = temp_cap;
+    }
+
+public:
     //конструктор
-    subvector(){
-        mas = nullptr;
-        top = 0;
-        capacity = 0;
+    subvector(): mas(nullptr), top(0), capacity(0) {
     };
 
     //деструктор
@@ -68,21 +79,17 @@ public:
     //оператор присваивания перемещением
     subvector& operator= (subvector<T>&& rhs) {
         if (this != &rhs) {
-            if (mas) {
-                T *temp = mas;
-                mas = rhs.mas;
-                delete[]temp;
-            }
-            else {
-                mas = rhs.mas;
-            }
-            top = rhs.top;
-            capacity = rhs.capacity;
-            rhs.mas = nullptr;
-            rhs.top = 0;
-            rhs.capacity = 0;
+            swap(rhs);
         }
         return *this;
+    }
+
+    unsigned int get_top() const {
+        return top;
+    }
+
+    unsigned int get_capacity() const {
+        return capacity;
     }
 
     bool push_back(const T& d) {
@@ -159,9 +166,10 @@ int main() {
     a.push_back(50);
     a.push_back(40);
     a.push_back(10);
-    cout << x.top << ' ' << a.top << endl;
+    cout << x.subvector<int>::get_top() << ' ' << x.subvector<int>::get_top() << endl;
     a = move(x);
-    cout << x.top << ' ' << a.top;
+    cout << x.subvector<int>::get_top() << ' ' << x.subvector<int>::get_top() << endl;
+
 
 };
 
