@@ -58,9 +58,9 @@ private:
 public:
 
 	//конструктор
-    subforwardlist():  begin(nullptr), end(nullptr) {
-		cout << "List created" << endl;
-    }
+	subforwardlist():  begin(nullptr), end(nullptr) {
+			cout << "List created" << endl;
+	}
 
 	//деструктор
 	~subforwardlist() {
