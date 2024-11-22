@@ -70,7 +70,7 @@ public:
         mas = rhs.mas;
         top = rhs.top;
         capacity = rhs.capacity;
-        delete rhs.mas;
+        delete[]rhs.mas;
         rhs.mas = nullptr;
         rhs.top = 0;
         rhs.capacity = 0;
