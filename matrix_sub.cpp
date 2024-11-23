@@ -12,7 +12,7 @@ using namespace std;
 template<typename T>
 class subvector {
 
-T *mas;
+T *mas; 
 unsigned int top;
 unsigned int capacity; 
 
@@ -98,13 +98,6 @@ public:
             swap(rhs);
         }
         return *this;
-    }
-
-    void print_vecor() const {
-        for (int i = 0; i < top; i++) {
-            cout << mas[i] << " "; 
-        }
-        cout << endl;
     }
 
     unsigned int get_top() const {
@@ -197,8 +190,8 @@ public:
 
 template<typename T>
 class Matrix {
-	subvector<T> data;
-	unsigned int cols, rows;
+subvector<T> data;
+unsigned int cols, rows;
 
 private:
     Matrix getMinor(unsigned row, unsigned col) {
@@ -257,15 +250,18 @@ public:
         }
         return new_matrix;
     }
-    
-    void print_matrix() const {
-        for (int i = 0; i < rows*cols; i++) {
-            cout << data[i] << " ";
-            if ((i+1) % cols == 0) {
-                cout << endl;
+
+    static Matrix getSpecificDeterminantFull(unsigned n, T determinant) {
+        Matrix<T> new_matrix = getSpecificDeterminantTriangle(n, determinant);
+        int a, b;
+        for (int i = 0; i < n*2; i++) {
+            a = rand() % n;
+            if (a) {
+                b = a/2;
+                new_matrix.row_subtraction(a, b, -1);
             }
         }
-        cout << endl;
+        return new_matrix;
     }
 
 	unsigned int get_rows() const {
@@ -302,7 +298,18 @@ public:
         return data[row*cols+col];
     }
 
-    T getDeterminant() {
+    T& operator()(unsigned n) {
+        return data[n];
+    }
+	T operator()(unsigned n) const {
+        return data[n];
+    }
+
+    T getDeterminant(unsigned ok = 1) {
+        if (ok) {
+            toTriangle();
+            transpose();
+        } 
         if (rows != cols) {
             return T();
         } else {
@@ -313,28 +320,85 @@ public:
                 for (int i = 0; i < cols; i++) {
                     T a = data[i];
                     if (a) {
-                        res += pow(-1, i) * a * (getMinor(0, i).getDeterminant());
+                        res += pow(-1, i) * a * (getMinor(0, i).getDeterminant(0));
                     }
                 }
                 return res;
             }
         }
     }
+
+    T getDeterminant() const {
+        Matrix temp = *this;
+        return temp.getDeterminant();
+    }
+
+    // b-a
+    void row_subtraction(unsigned b, unsigned a, T mult) {
+        for (int i = 0; i < cols; i++) {
+            operator()(b, i) -= operator()(a, i)*mult;
+        }
+    }
+
+    Matrix& toTriangle() {
+        T mult;
+        for (int k = 0; k < rows-1; k++) {
+            if (operator()(k, k)) {
+                for (int i = k+1; i < rows; i++) {
+                    mult = operator()(i, k) / operator()(k, k);
+
+                    row_subtraction(i, k, mult);
+                } 
+            } else {
+                for (int z = 0; z < rows; z++) {
+                    if (operator()(z, k)) {
+                        row_subtraction(k, z, -1);
+                    }
+                    break;
+                }
+                for (int i = k+1; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
+                        T mult = operator()(i, k) / operator()(k, k);
+                        row_subtraction(i, k, mult);
+                    }
+                }   
+            }
+        }
+
+        return *this;
+    }
     
 	
 };
 
-int main() {
-    Matrix<int> M(2, 2);
-    Matrix<int> m1 = Matrix<int>::getSpecificDeterminantTriangle(5, 3);
-    Matrix<int> m2 = Matrix<int>::getSpecificDeterminantTriangle(10, 4);
-    Matrix<int> m3 = Matrix<int>::getSpecificDeterminantSimple(50, 5);
-    Matrix<int> m4 = Matrix<int>::getSpecificDeterminantSimple(100, 6);
+template<typename T>
+ostream& operator<< (ostream &os, const Matrix<T> &M) {
+    unsigned rows = M.get_cols();
+    unsigned cols = M.get_rows();
+    for (int i = 0; i < rows*cols; i++) {
+        os << M(i) << " ";
+        if ((i+1) % cols == 0) {
+            os << endl;
+        }
+    }
+    os << endl;
+    return os;
+}   
 
-    m1.print_matrix();
+int main() {
+    const Matrix<double> m1 = Matrix<double>::getSpecificDeterminantFull(100, 3);
+    const Matrix<int> m3 = Matrix<int>::getSpecificDeterminantFull(10, 5);
+    Matrix<int> m4 = Matrix<int>::getSpecificDeterminantFull(100, 6);
 
     cout << m1.getDeterminant() << endl;
-    cout << m2.getDeterminant() << endl;
     cout << m3.getDeterminant() << endl;
     cout << m4.getDeterminant() << endl;
+
+
+    // Matrix<int> m2 = Matrix<int>::getSpecificDeterminantFull(1000, 4); // демонстрация быстроты работы кода
+    // cout << m2.getDeterminant() << endl; 
+
+
+    // cout << m3; // демонстрация произвольности созданных матрицs
+
 }   
