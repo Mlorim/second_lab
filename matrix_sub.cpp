@@ -343,7 +343,6 @@ public:
     Matrix& toTriangle() {
         T mult;
         for (int k = 0; k < rows-1; k++) {
-            // cout << *this;
             if (operator()(k, k)) {
                 for (int i = k+1; i < rows; i++) {
                     mult = operator()(i, k) / operator()(k, k);
@@ -386,14 +385,13 @@ ostream& operator<< (ostream &os, const Matrix<T> &M) {
 }   
 
 int main() {
-    // const Matrix<double> m1 = Matrix<double>::getSpecificDeterminantFull(100, 3);
-    // const Matrix<int> m3 = Matrix<int>::getSpecificDeterminantFull(10, 5);
-    // Matrix<int> m4 = Matrix<int>::getSpecificDeterminantFull(100, 6);
+    const Matrix<double> m1 = Matrix<double>::getSpecificDeterminantFull(100, 3);
+    const Matrix<int> m3 = Matrix<int>::getSpecificDeterminantFull(10, 5);
+    Matrix<int> m4 = Matrix<int>::getSpecificDeterminantFull(100, 6);
 
-    // cout << m1.getDeterminant() << endl;
-    // cout << m3.getDeterminant() << endl;
-    // cout << m4.getDeterminant() << endl;
-    // cout << m.getDeterminant() << endl;
+    cout << m1.getDeterminant() << endl;
+    cout << m3.getDeterminant() << endl;
+    cout << m4.getDeterminant() << endl;
 
     // Matrix<int> m2 = Matrix<int>::getSpecificDeterminantFull(1000, 4); // демонстрация быстроты работы кода
     // cout << m2.getDeterminant() << endl; 
