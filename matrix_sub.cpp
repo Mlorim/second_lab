@@ -340,6 +340,12 @@ public:
         }
     }
 
+    void swapRows(int a, int b) {
+        for (int i = 0; i < cols; i++) {
+            std::swap(operator()(a, i), operator()(b, i));
+        }
+    }
+
     Matrix& toTriangle() {
         T mult;
         for (int k = 0; k < rows-1; k++) {
@@ -357,17 +363,14 @@ public:
                 }
 
                 for (int i = k+1; i < rows; i++) {
-                    for (int j = 0; j < cols; j++) {
-                        T mult = operator()(i, k) / operator()(k, k);
                         row_subtraction(i, k, mult);
-                    }
                 }   
             }
         }
 
         return *this;
     }
-    
+
 	
 };
 
