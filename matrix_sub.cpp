@@ -355,6 +355,7 @@ public:
                     }
                     break;
                 }
+
                 for (int i = k+1; i < rows; i++) {
                     for (int j = 0; j < cols; j++) {
                         T mult = operator()(i, k) / operator()(k, k);
@@ -385,7 +386,7 @@ ostream& operator<< (ostream &os, const Matrix<T> &M) {
 }   
 
 int main() {
-    const Matrix<double> m1 = Matrix<double>::getSpecificDeterminantFull(100, 3);
+    Matrix<double> m1 = Matrix<double>::getSpecificDeterminantFull(100, 3);
     const Matrix<int> m3 = Matrix<int>::getSpecificDeterminantFull(10, 5);
     Matrix<int> m4 = Matrix<int>::getSpecificDeterminantFull(100, 6);
 
