@@ -361,9 +361,10 @@ public:
                     }
                     break;
                 }
-
-                for (int i = k+1; i < rows; i++) {
+                if (operator()(k, k)) {
+                    for (int i = k+1; i < rows; i++) {
                         row_subtraction(i, k, mult);
+                    }
                 }   
             }
         }
