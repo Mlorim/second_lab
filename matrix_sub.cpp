@@ -32,6 +32,7 @@ private:
 public:
     //конструктор
     subvector(): mas(nullptr), top(0), capacity(0) {
+        cout << "Vector Ctor" << endl;
     };
 
     //конструктор, заполняющий value
@@ -41,11 +42,13 @@ public:
             temp[i] = value;
         }
         mas = temp;
+        cout << "Vector value Ctor" << endl;
     }
 
     //деструктор
     ~subvector() {
         delete[]mas;
+        cout << "Vector Dtor" << endl;
     }
 
     //конструктор копирования
@@ -57,6 +60,8 @@ public:
             new_mas[i] = rhs.mas[i];
         }
         mas = new_mas;
+        cout << "Vector Copy Ctor" << endl;
+
     }
 
     //оператор присваивания копированием
@@ -78,7 +83,10 @@ public:
             }
 
         }
+        cout << "Vector Copied" << endl;
+
         return *this;
+        
     }
 
     //конструктор перемещенея 
@@ -90,6 +98,8 @@ public:
         rhs.mas = nullptr;
         rhs.top = 0;
         rhs.capacity = 0;
+        cout << "Vector Move Ctor" << endl;
+
     }
 
     //оператор присваивания перемещением
@@ -97,6 +107,7 @@ public:
         if (this != &rhs) {
             swap(rhs);
         }
+        cout << "Vector Moved" << endl;
         return *this;
     }
 
@@ -214,21 +225,18 @@ public:
     Matrix(subvector<T> const &data, unsigned rows, unsigned cols): data(data), rows(rows), cols(cols) {}
 	// создание матрицы, заполненных value
 	Matrix(unsigned rows, unsigned cols, int value = 0): rows(rows), cols(cols) {
-        subvector<T> temp(rows*rows, 0);
-        data = temp;
+        data = subvector<T>(rows*rows, 0);
     }
 
 	// создание единичной матрицы
 	static Matrix Identity(unsigned rows) {
-        subvector<T> data(rows*rows, 0);
-        int i = 0;
-        int j = 0;
+        Matrix<T> new_matrix = Matrix<T>(rows, rows);
+        unsigned i = 0;
         while (i < rows) {
-            data[i+j*rows] = 1;
+            new_matrix.operator()(i, i) = 1;
             i++;
-            j++;
         }
-        return Matrix(data, rows, rows);
+        return new_matrix;
     }
 
 	// создание случайной матрицы с заданным детерминантом
@@ -280,13 +288,12 @@ public:
             }
         }
         swap(rows, cols);
-        data = temp;
+        data = move(temp);
         return *this;
     }
 
 	Matrix transpose() const {
-       subvector<T> temp = data;
-       Matrix new_matrix = Matrix(temp, rows, cols);
+       Matrix<T> new_matrix = *this;
        new_matrix.transpose();
        return new_matrix;
     }
@@ -333,6 +340,23 @@ public:
         return temp.getDeterminant();
     }
 
+    T getDeterminantSimple() {
+        if (rows != cols) {
+            return T();
+        } else {
+            T res = 1;
+            for (int i = 0; i < rows; i++) {
+                res *= operator()(i, i);
+            }
+            return res;
+        }
+    }
+
+    T getDeterminantSimple() const {
+        Matrix temp = *this;
+        return temp.getDeterminantSimple();
+    }
+
     // b-a
     void row_subtraction(unsigned b, unsigned a, T mult) {
         for (int i = 0; i < cols; i++) {
@@ -349,7 +373,7 @@ public:
     Matrix& toTriangle() {
         T mult;
         for (int k = 0; k < rows-1; k++) {
-            if (operator()(k, k)) {
+            if (operator()(k, k) > 1e-16 || operator()(k, k) < -(1e-16)) {
                 for (int i = k+1; i < rows; i++) {
                     mult = operator()(i, k) / operator()(k, k);
                     row_subtraction(i, k, mult);
@@ -390,18 +414,22 @@ ostream& operator<< (ostream &os, const Matrix<T> &M) {
 }   
 
 int main() {
-    Matrix<double> m1 = Matrix<double>::getSpecificDeterminantFull(100, 3);
-    const Matrix<int> m3 = Matrix<int>::getSpecificDeterminantFull(10, 5);
-    Matrix<int> m4 = Matrix<int>::getSpecificDeterminantFull(100, 6);
+    // Matrix<double> m1 = Matrix<double>::getSpecificDeterminantFull(100, 3);
+    // const Matrix<int> m3 = Matrix<int>::getSpecificDeterminantFull(10, 5);
+    // Matrix<int> m4 = Matrix<int>::getSpecificDeterminantFull(3, 0);
 
-    cout << m1.getDeterminant() << endl;
-    cout << m3.getDeterminant() << endl;
-    cout << m4.getDeterminant() << endl;
+    // cout << m1.getDeterminant() << endl;
+    // cout << m3.getDeterminant() << endl;
+    // cout << m4.getDeterminant() << endl;
+
+    Matrix<double> m = Matrix<double>::Identity(10);
+    m.transpose();
+    // cout << m.getDeterminantSimple();
 
     // Matrix<int> m2 = Matrix<int>::getSpecificDeterminantFull(1000, 4); // демонстрация быстроты работы кода
     // cout << m2.getDeterminant() << endl; 
 
 
-    // cout << m3; // демонстрация произвольности созданных матрицs
+    // cout << m3; // демонстрация произвольности созданных матриц
 
 }   
