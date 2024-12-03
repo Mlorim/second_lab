@@ -223,9 +223,10 @@ private:
 public:
 
     Matrix(subvector<T> const &data, unsigned rows, unsigned cols): data(data), rows(rows), cols(cols) {}
-	// создание матрицы, заполненных value
+	
+    // создание матрицы, заполненных value
 	Matrix(unsigned rows, unsigned cols, int value = 0): rows(rows), cols(cols) {
-        data = subvector<T>(rows*rows, 0);
+        data = subvector<T>(rows*rows, value);
     }
 
 	// создание единичной матрицы
@@ -422,8 +423,9 @@ int main() {
     // cout << m3.getDeterminant() << endl;
     // cout << m4.getDeterminant() << endl;
 
-    Matrix<double> m = Matrix<double>::Identity(10);
-    m.transpose();
+    // Matrix<double> m = Matrix<double>::Identity(10);
+    // m.transpose();
+    
     // cout << m.getDeterminantSimple();
 
     // Matrix<int> m2 = Matrix<int>::getSpecificDeterminantFull(1000, 4); // демонстрация быстроты работы кода
