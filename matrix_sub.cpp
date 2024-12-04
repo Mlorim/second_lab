@@ -382,12 +382,12 @@ public:
                 } 
             } else {
                 for (int z = k; z < rows; z++) {
-                    if (operator()(z, k)) {
+                    if (operator()(z, k) > 1e-16 || operator()(z, k) < -(1e-16)) {
                         row_subtraction(k, z, -1);
                     }
                     break;
                 }
-                if (operator()(k, k)) {
+                if (operator()(k, k) > 1e-16 || operator()(k, k) < -(1e-16)) {
                     for (int i = k+1; i < rows; i++) {
                         row_subtraction(i, k, mult);
                     }
@@ -416,18 +416,18 @@ ostream& operator<< (ostream &os, const Matrix<T> &M) {
 }   
 
 int main() {
-    // Matrix<double> m1 = Matrix<double>::getSpecificDeterminantFull(100, 3);
+    Matrix<double> m1 = Matrix<double>::getSpecificDeterminantFull(1000, 3);
     // const Matrix<int> m3 = Matrix<int>::getSpecificDeterminantFull(10, 5);
     // Matrix<int> m4 = Matrix<int>::getSpecificDeterminantFull(3, 0);
 
-    // cout << m1.getDeterminant() << endl;
+    // cout << m1.getDeterminantSimple() << endl;
     // cout << m3.getDeterminant() << endl;
     // cout << m4.getDeterminant() << endl;
 
-    Matrix<double> m = Matrix<double>::Identity(10);
-    m.transpose();
+    // Matrix<double> m = Matrix<double>::Identity(10);
+    // m.transpose();
     
-    cout << m.getDeterminantSimple();
+    // cout << m.getDeterminantSimple();
 
     // Matrix<int> m2 = Matrix<int>::getSpecificDeterminantFull(1000, 4); // демонстрация быстроты работы кода
     // cout << m2.getDeterminant() << endl; 
