@@ -345,6 +345,7 @@ public:
         if (rows != cols) {
             return T();
         } else {
+            toTriangle();
             T res = 1;
             for (int i = 0; i < rows; i++) {
                 res *= operator()(i, i);
@@ -423,10 +424,10 @@ int main() {
     // cout << m3.getDeterminant() << endl;
     // cout << m4.getDeterminant() << endl;
 
-    // Matrix<double> m = Matrix<double>::Identity(10);
-    // m.transpose();
+    Matrix<double> m = Matrix<double>::Identity(10);
+    m.transpose();
     
-    // cout << m.getDeterminantSimple();
+    cout << m.getDeterminantSimple();
 
     // Matrix<int> m2 = Matrix<int>::getSpecificDeterminantFull(1000, 4); // демонстрация быстроты работы кода
     // cout << m2.getDeterminant() << endl; 
